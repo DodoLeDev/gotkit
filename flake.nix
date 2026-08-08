@@ -1,7 +1,7 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs?ref=nixos-unstable";
-    nixpkgs-gotk4.url = "github:NixOS/nixpkgs?ref=nixos-24.05";
+    nixpkgs-gotk4.url = "github:NixOS/nixpkgs?ref=nixos-26.05";
     gotk4-nix.url = "github:diamondburned/gotk4-nix/main";
     flake-utils.url = "github:numtide/flake-utils";
   };
@@ -38,10 +38,17 @@
             libadwaita
           ];
 
-          packages = with pkgs; [ self.formatter.${system} ];
+          packages = [
+            pkgs.clang
+            self.formatter.${system}
+          ];
 
-          go = pkgs.go_1_24;
+          go = pkgs.go_1_27;
           inherit (pkgs) gopls gotools;
+
+          shellHook = ''
+            export CC=clang # for speed
+          '';
         };
 
         formatter = pkgs.nixfmt-rfc-style;
